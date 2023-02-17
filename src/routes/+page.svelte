@@ -1,12 +1,10 @@
 <script lang="ts">
-  
 
   let serverResult: string = "Click the above button..."
 
   async function runCommandOnBackend() {
     const response = await fetch('/', {
       method: 'GET',
-
     });
 
     serverResult = await response.json();
