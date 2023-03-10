@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  dbpg:
+    image: library/postgres:14.4
+    restart: on-failure
+    environment:
+      POSTGRES_USER: "${PGUSER}"
+      POSTGRES_PASSWORD: "${PGPASSWORD}"
+      POSTGRES_DB: "${PGDATABASE}"
+    volumes:
+      - ./Docker/Data/PostgreSQL:/var/lib/postgresql
+    ports:
+      - ${PGPORT}:5432
