@@ -42,7 +42,8 @@ export const GET = (({url}) => {
 	// 	.at(0)
 
 	const usage = execSync(
-		`sudo btrfs filesystem usage -b ${mountPoint} | grep "Used:"`
+		// `sudo btrfs filesystem usage -b ${mountPoint} | grep "Used:"`
+		`btrfs filesystem usage -b ${mountPoint} | grep "Used:"`
 	)
 		.toString()
 		.split(/[ \n\t()]/)
@@ -50,7 +51,8 @@ export const GET = (({url}) => {
 		.filter(s => !ignore.includes(s))
 		.at(0)
 
-	const sizeC = `sudo btrfs filesystem usage -b ${mountPoint} | grep "Device size:"`
+	// const sizeC = `sudo btrfs filesystem usage -b ${mountPoint} | grep "Device size:"`
+	const sizeC = `btrfs filesystem usage -b ${mountPoint} | grep "Device size:"`
 	const size = execSync(sizeC)
 		.toString()
 		.split(/[ \n\t()]/)
