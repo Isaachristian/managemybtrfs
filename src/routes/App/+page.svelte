@@ -3,9 +3,22 @@
     import Notifications from "$lib/components/Notifications.svelte";
     import Settings from "$lib/components/Settings.svelte";
 
-    let fsList: string[] = []
+    let fsList: any[] = []
 
-    function getFileSystems() {
+    async function getFileSystems() {
+      let res = await fetch('/API/getfs');
+
+      try {
+        let item = JSON.parse(await res.json());
+
+        if (item?.filesystems) {
+          fsList = [...item.filesystems]
+        }
+
+        console.log(item);
+      } catch (e) {
+        console.error(e);
+      }
 
     }
 </script>
@@ -24,14 +37,17 @@
 
 <!-- Page Content -->
 <div class="absolute left-4 right-4 top-14 bottom-4">
-  <button>Get Filesystems</button>
+  <button on:click={getFileSystems}>Get Filesystems</button>
 
+  <br>
   <br>
 
   {#if fsList.length === 0}
-    There are no file systems...
+    Waiting to Load Filesystems...
   {:else}
-    {fsList}
+    {#each fsList as fs}
+      {fs?.target}
+    {/each}
   {/if}
 </div>
 <!-- End Page Content -->

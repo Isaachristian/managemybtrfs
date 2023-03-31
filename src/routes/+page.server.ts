@@ -1,8 +1,7 @@
 import type {Actions} from "@sveltejs/kit";
 import {env} from "$env/dynamic/private";
 import {fail, redirect} from "@sveltejs/kit";
-import { v4 as uuidv4 } from 'uuid';
-import { writeFileSync } from 'fs'
+import {sessionManager} from "../lib/tools/SessionManager";
 
 export const actions = {
   default: async ({cookies, request, getClientAddress}) => {
@@ -21,27 +20,19 @@ export const actions = {
     if (correctUsername !== username || correctPassword !== password)
       return fail(400, { username, message: 'Username or Password incorrect' })
 
-    // Create the sessionid
-    const inOneHour = new Date((new Date()).getTime() + 60 * 60 * 1000)
-    const inTenSeconds = new Date((new Date()).getTime() + 10 * 1000)
-    const sessionid = uuidv4()
+    // Create the session ID
+    const sm = new sessionManager()
+    const sessionID = sm.createSession(getClientAddress())
 
-    // Save the sessionid to a local file
-    saveToSessionList(sessionid, inTenSeconds, getClientAddress())
-
-    // Set the cookie for the user
-    cookies.set('sessionid', sessionid, {
-      expires: inOneHour,
+    // Set the cookie for the user TODO: Detect secure
+    cookies.set('sessionid', sessionID, {
       sameSite: "strict",
-      httpOnly: true
+      httpOnly: true,
+      secure: false,
+      path: '/'
     })
 
     // After sign in, redirect to the main page
     throw redirect(303, '/App')
   }
 } satisfies Actions;
-
-
-function saveToSessionList(sessionid: string, expire: Date, clientIP: string): void {
-  writeFileSync('session.temp', `${sessionid}|${expire}|${clientIP}`)
-}

@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --host",
 		"format": "npx prettier --write \"{,!(node_modules|public)/**/}*.{ts,svelte}\"",
 		"dev_broadcast": "vite dev --host 192.168.1.38",
 		"build": "vite build",
