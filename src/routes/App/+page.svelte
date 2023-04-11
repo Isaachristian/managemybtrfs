@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {faBell, faCog} from "@fortawesome/free-solid-svg-icons";
     import Notifications from "$lib/components/Notifications.svelte";
-    import Settings from "$lib/components/Settings.svelte";
+    import AddFileSystem from "$lib/components/modals/AddFileSystem.svelte";
+
 
     let fsList: any[] = []
 
@@ -28,8 +28,7 @@
   <nav class="relative w-full h-full flex">
     <div class="leading-8 px-2 font-bold text-xl">ManageMyBTRFS</div>
     <div class="absolute right-0 flex space-x-2">
-      <Notifications icon={faBell}/>
-      <Settings icon={faCog}/>
+      <Notifications/>
     </div>
   </nav>
 </div>

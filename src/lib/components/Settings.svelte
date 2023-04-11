@@ -30,14 +30,9 @@
     >
       <div class="relative h-full w-60 p-2">
         <!-- Notifications -->
-        <div class="text-xl font-bold mb-2">
-          Settings
-        </div>
 
         <div class="space-y-2">
-          <form method="post" action="?/logout">
-            <button>Logout</button>
-          </form>
+         
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@
 </script>
 
 <div class="absolute inset-0 text-white">
-	<div class="relative w-full h-full bg-gray-900">
+	<div class="relative w-full h-full bg-neutral-900">
 		<slot/>
 	</div>
 </div>
