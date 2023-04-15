@@ -9,7 +9,6 @@ export class sessionManager {
     constructor() {
         if (!existsSync('session.temp')) {
             writeFileSync('session.temp', '')
-            console.log("made it here")
         }
     }
 

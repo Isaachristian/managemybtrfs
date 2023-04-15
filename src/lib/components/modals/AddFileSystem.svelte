@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { blockDevice, createFS, drive, profile, selectedDrive } from "$lib/interfaces/btrfs"
+  import type { blockDevice, createFS, profile } from "$lib/interfaces/btrfs"
   import { faXmark } from "@fortawesome/free-solid-svg-icons"
   import Fa from "svelte-fa/src/fa.svelte"
-  import { scale } from "svelte/transition"
+  import { scale, slide } from "svelte/transition"
   import SelectProfile from "../addfs/SelectProfile.svelte"
   import SelectDrives from "../addfs/SelectDrives.svelte"
   import SelectMountPoint from "../addfs/SelectMountPoint.svelte"
@@ -16,6 +16,8 @@
   let filesystemName: string
   let mntDirectory: string
 
+  let error: string | undefined = undefined
+
   let submitDisabled: boolean = true
   $: checkDisabled(selectedProfile, selectedDrives, driveCntValid, filesystemName, mntDirectory)
 
@@ -24,7 +26,7 @@
     submitDisabled = !(sp && sd && dcv && fsn && mp)
   }
 
-  function submit() {
+  async function submit() {
     if (selectedProfile && selectedDrives) {
       let data: createFS = {
         profile: selectedProfile,
@@ -33,14 +35,22 @@
       }
   
       if (!submitDisabled) {
-        fetch("API/createFS", {
+        let res = await fetch("API/createFS", {
           method: 'POST',
           body: JSON.stringify(data),
           headers: {
             'content-type': 'application/json'
           }
         })
-    }
+
+        let body = await res.json()
+
+        if (body.success == true) {
+          close()
+        } else {
+          error = body.message
+        }
+      }
 
     }
   }
@@ -100,6 +110,7 @@
           class:cursor-default={submitDisabled}
           class:bg-cyan-700={submitDisabled}
           class:hover:bg-cyan-700={submitDisabled}
+          class:text-neutral-400={submitDisabled}
           on:click={submit}
           formaction="?/createFileSystem"
         >
@@ -112,6 +123,12 @@
         >
           Cancel
         </button>
+
+        {#if error}
+          <div class=" text-red-400" transition:slide={{duration: 200}}>
+            {error}
+          </div>
+        {/if}
       </div>
     </div>
   </div>

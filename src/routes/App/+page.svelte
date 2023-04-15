@@ -1,6 +1,6 @@
 <script lang="ts">
     import Notifications from "$lib/components/Notifications.svelte";
-    import AddFileSystem from "$lib/components/modals/AddFileSystem.svelte";
+  import { onMount } from "svelte"
 
 
     let fsList: any[] = []
@@ -9,18 +9,20 @@
       let res = await fetch('/API/getfs');
 
       try {
-        let item = JSON.parse(await res.json());
+        let data = JSON.parse(await res.json());
 
-        if (item?.filesystems) {
-          fsList = [...item.filesystems]
+        if (data?.filesystems) {
+          fsList = [...data.filesystems]
         }
-
-        console.log(item);
       } catch (e) {
         console.error(e);
       }
 
     }
+
+    onMount(() => {
+
+    })
 </script>
 
 <!-- Top Nav -->
@@ -36,13 +38,15 @@
 
 <!-- Page Content -->
 <div class="absolute left-4 right-4 top-14 bottom-4">
+
+
   <button on:click={getFileSystems}>Get Filesystems</button>
 
   <br>
   <br>
 
   {#if fsList.length === 0}
-    Waiting to Load Filesystems...
+    Loading Filesystems...
   {:else}
     {#each fsList as fs}
       {fs?.target}

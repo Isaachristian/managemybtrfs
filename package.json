@@ -7,7 +7,7 @@
 		"format": "npx prettier --write \"{,!(node_modules|public)/**/}*.{ts,svelte}\"",
 		"dev_broadcast": "vite dev --host 192.168.1.38",
 		"build": "vite build",
-		"preview": "vite preview",
+		"preview": "vite preview --host",
 		"test": "playwright test",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

@@ -10,8 +10,6 @@
   $: driveCntValid = checkDriveCountValid(selectedProfile, selectedDrives)
   $: minDriveCnt = selectedProfile?.minDrive ?? 1
 
-  $: console.log(minDriveCnt)
-
   let avaliableDrives: blockDevice[] = []
 
   onMount(async () => getBlockDevices())
@@ -34,8 +32,6 @@
   }
 
   function checkDriveCountValid(sp: profile | null, sd: blockDevice[]): boolean {
-    console.log("made it here")
-
     if (sp) {
       const minMet: boolean = sd.length >= (sp?.minDrive ?? 1)
       const maxMet: boolean = sp?.maxDrive ? sd.length <= sp?.maxDrive : true

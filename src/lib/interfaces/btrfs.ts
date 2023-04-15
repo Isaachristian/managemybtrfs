@@ -1,27 +1,27 @@
 export const btrfsProfiles: profile[] = [
   { 
-    name: "Single",  
+    name: "single",  
     description: "", 
     minDrive: 1 
   }, { 
-    name: "RAID0",   
+    name: "raid0",   
     description: "", 
     minDrive: 1, 
     maxDrive: 5
   }, { 
-    name: "RAID1",   
+    name: "raid1",   
     description: "", 
     minDrive: 2
   }, { 
-    name: "RAID1C3", 
+    name: "raid1c3", 
     description: "", 
     minDrive: 3 
   }, { 
-    name: "RAID1C4", 
+    name: "raid1c4", 
     description: "", 
     minDrive: 4 
   }, { 
-    name: "RAID10",  
+    name: "raid10",  
     description: "", 
     minDrive: 2
   },

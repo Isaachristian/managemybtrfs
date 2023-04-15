@@ -5,7 +5,6 @@ import {sessionManager} from "../lib/tools/SessionManager";
 export const load: PageServerLoad = (async ({ cookies, url, getClientAddress}) => {
   const sm = new sessionManager()
 
-  console.log('sessionid -> ', cookies.get('sessionid'))
   if (sm.validSession(cookies.get('sessionid') ?? '', getClientAddress())) {
     if (url.pathname === '/') {
       throw redirect(303, '/App')
