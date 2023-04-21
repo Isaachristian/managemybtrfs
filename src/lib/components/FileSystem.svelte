@@ -1,11 +1,20 @@
 <script lang="ts">
-  import type { fileSystem } from "$lib/interfaces/btrfs"
+  import type { fileSystem, subvolume } from "$lib/interfaces/btrfs"
   import { faEllipsis, faPlus } from "@fortawesome/free-solid-svg-icons"
   import Fa from "svelte-fa/src/fa.svelte"
   import SubVolume from "./SubVolume.svelte"
+  import { createSubvolumeWithLocation } from "$lib/tools/createNewSubvolume"
 
   export let fileSystem: fileSystem
 
+  let value: string = "" // value of the new subvolume
+  let error: string | undefined
+
+  $: console.log(fileSystem.mountpoint)
+
+  async function addSubvolume() {
+    error = await createSubvolumeWithLocation(`${fileSystem.mountpoint}/value`)
+  }
 
 </script>
 

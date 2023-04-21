@@ -6,6 +6,7 @@
   import { slide } from "svelte/transition"
   import Input from "./Input.svelte"
   import { invalidateAll } from "$app/navigation"
+  import { createSubvolume } from "$lib/tools/createNewSubvolume"
 
 
   export let sv: subvolume
@@ -30,31 +31,8 @@
     return `${parentPath}${parentPath.length > 0 ? '/' : ''}${sv.name}`
   }
 
-
-  interface createSubvolumeRequest {
-    name: string
-    location: string
-  }
-
   async function createNewSubvolume() {
-    let mp = sv.fsMountPoint + '/'
-    let pp = parentPath == "" ? parentPath : parentPath + '/'
-
-    let request = {
-      location: `${mp}${pp}${sv.name}/${value}`
-    }
-
-    const res = await fetch('API/createSubvolume', {
-      method: "post",
-      body: JSON.stringify(request)
-    })
-
-    let data = await res.json();
-    if (data.error) {
-      error = data.error;
-    } else {
-      invalidateAll()
-    }
+    error = await createSubvolume(sv, value, parentPath)
   }
 </script>
 
@@ -64,7 +42,7 @@
 >
   <span class="font-bold text-md leading-3" class:mb-3={sv.subvolumes.length > 0}>
     <span>
-      {sv.name ? sv.name : "Placeholder"} ({parentPath})
+      {sv.name ? sv.name : "Placeholder"}
     </span>
     <button 
       class="float-right h-4 relative"
@@ -121,9 +99,9 @@
         Submit
       </button>
 
-    {#if error}
-      <div class="absolute text-red-400 h-8 top-8">{error}</div>
-    {/if}
+      {#if error}
+        <div class="absolute text-red-400 h-8 top-8">{error}</div>
+      {/if}
     </div>
   {/if}
 </div>

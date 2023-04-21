@@ -17,7 +17,7 @@
   <nav class="relative w-full h-full flex">
     <div class="leading-8 px-2 font-bold text-xl">ManageMyBTRFS</div>
     <div class="absolute right-0 flex space-x-2">
-      <button on:click={() => invalidateAll()}>test</button>
+      <!-- <button on:click={() => invalidateAll()}>test</button> -->
       <MainMenu bind:showAddFilesystem/>
     </div>
   </nav>

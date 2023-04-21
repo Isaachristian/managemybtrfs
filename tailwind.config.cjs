@@ -24,6 +24,7 @@ module.exports = {
     "border-neutral-700",
     "border-neutral-800",
     "border-neutral-900",
+    "h-12"
   ],
   plugins: [],
 }
