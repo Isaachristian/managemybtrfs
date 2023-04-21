@@ -7,7 +7,7 @@ import {execSync} from "child_process"
  * @returns A list of block devices that have no file systems on them
  */
 export function getAvailableBlockDevices(): blockDevice[] {
-  let buf = execSync("lsblk --json")
+  let buf = execSync("sudo lsblk --json")
   let blockDevices: blockDevice[] = JSON.parse(buf.toString())?.blockdevices
 
   if (!blockDevices) throw("No failed to get devices")
@@ -27,14 +27,12 @@ export function getAvailableBlockDevices(): blockDevice[] {
     }
   }
 
-  
-
   return avaliableBlockDevices
 }
 
 function checkIsPartOfBTRFS(name: string ): boolean {
   try {
-    execSync(`btrfs device stats /dev/${name}`)
+    execSync(`sudo btrfs device stats /dev/${name}`)
 
     return true
   } catch (e) {

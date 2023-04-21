@@ -1,8 +1,7 @@
-import {execSync} from 'child_process'
+import { getFilesystems } from '$lib/tools/getFileSystems'
 import {json, type RequestHandler} from '@sveltejs/kit'
 
 export const GET = (({url}) => {
-
 	/*
 		// /dev/sdb /mnt/data btrfs rw,relatime,degraded,space_cache=v2,subvolid=5,subvol=/ 0 0
 
@@ -68,8 +67,8 @@ export const GET = (({url}) => {
 		// return json(`Percent: ${((Number(usage) / Number(size)) * 100).toFixed(2)}%`)
 	*/
 
-	let buf = execSync('findmnt -t btrfs --json')
-
-
-	return json(buf.toString())
+	
+	return json(getFilesystems())
 }) satisfies RequestHandler
+
+

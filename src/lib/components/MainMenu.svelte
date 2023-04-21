@@ -1,16 +1,16 @@
 <script lang="ts">
 	import Fa from 'svelte-fa/src/fa.svelte'
   import {faBars as icon, faChevronDown} from "@fortawesome/free-solid-svg-icons";
-  import { fly, slide } from 'svelte/transition'
-  import AddFileSystem from './modals/AddFileSystem.svelte'
+  import { slide } from 'svelte/transition'
+  import { cubicOut } from 'svelte/easing'
+  import { invalidateAll } from '$app/navigation'
 
-	/** Import the refs/icons for the pages */
-	// export let icon: IconDefinition
-	export let scale = 1.3
+  /** For toggling the modal */
+  export let showAddFilesystem = false
 
+	let scale = 1.3
   let show = false
   let showMore = false
-  let showAddFilesystem = false
   
 
 	function showNotifications() {
@@ -20,6 +20,11 @@
 
   function toggleAddFilesystem() {
     showAddFilesystem = true
+    showNotifications()
+  }
+
+  function runGetFileSystems() {
+    invalidateAll()
     showNotifications()
   }
 
@@ -36,8 +41,8 @@
   {#if show}
     <div
       class="absolute top-10 -right-0 rounded-xl bg-neutral-800 transition-all
-             z-10 border-neutral-600 border-[1px]"
-      transition:fly={{x: 0, y: 5, duration: 200}}
+             z-10 border-neutral-600 border-[1px] shadow-lg "
+      transition:slide={{duration: 200, easing: cubicOut}}
       on:click|stopPropagation
     >
       <div class="relative h-full w-60 p-2">
@@ -56,7 +61,13 @@
               </button>
 
               {#if showMore}
-                <div class="grid gap-2 p-2" transition:slide={{ duration: 200}}>
+                <div class="grid gap-2 p-2" transition:slide={{duration: 200}}>
+                  <button 
+                    class="bg-neutral-500 rounded-md w-full h-8" 
+                    on:click={runGetFileSystems}
+                  >
+                    Refresh Filesystems
+                  </button>
                   <button 
                     class="bg-neutral-500 rounded-md w-full h-8" 
                     on:click={toggleAddFilesystem}
@@ -92,6 +103,5 @@
 </div>
 
 
-<AddFileSystem bind:show={showAddFilesystem}/>
 
 <svelte:window on:click={() => show = showMore = false}/>

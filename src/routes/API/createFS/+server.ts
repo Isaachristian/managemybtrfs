@@ -6,22 +6,38 @@ import { getAvailableBlockDevices } from "$lib/tools/getBlockDevice";
 
 export const POST = (async ({request}) => {
   try {
-    const {profile, devices, path}: createFS = await request.json()
+    const {profile, devices, path, label}: createFS = await request.json()
 
     let vp: string = verifyProfile(profile.name)
     let vd: string = verifyDevices(devices)
 
-    execSync(`mkfs.btrfs -d ${vp} -m ${vp} ${vd}`)
+    execSync(`sudo mkfs.btrfs -d ${vp} -m ${vp} ${vd}`)
 
     const uuid: string = getCreatedFSUUID(devices[0].name)
-    execSync(`mkdir -p ${path}`)
 
-    execSync(`mount /dev/${devices[0].name} ${path}`)
+    execSync(`sudo mkdir -p ${path}`)
 
-    fs.appendFileSync(
-      '/etc/fstab', 
-      `UUID=${uuid} ${path} btrfs defaults 0 0\n`
-    )
+    let oldFSTAB = fs.readFileSync('/etc/fstab')
+
+    try {
+      fs.appendFileSync(
+        '/etc/fstab', 
+        `UUID=${uuid} ${path} btrfs defaults 0 0\n`
+      )
+      
+      execSync(`sudo mount UUID=${uuid}`)
+      
+      execSync(`sudo btrfs filesystem label ${path} ${label}`)
+    } catch (e) {
+      fs.writeFileSync('/etc/fstab', oldFSTAB)
+
+      let devicesList: string = ""
+
+      for (let device of devices)
+        devicesList += ` /dev/${device.name}`
+
+      execSync(`sudo wipefs -a ${devicesList}`)
+    }
 
     return new Response(JSON.stringify({ success: true }))
   } catch (e) {

@@ -1,28 +1,15 @@
 <script lang="ts">
-    import Notifications from "$lib/components/Notifications.svelte";
-  import { onMount } from "svelte"
+  import { invalidateAll } from "$app/navigation"
+  import FileSystem from "$lib/components/FileSystem.svelte"
+  import MainMenu from "$lib/components/MainMenu.svelte"
+  import AddFileSystem from "$lib/components/modals/AddFileSystem.svelte"
+  import type { PageData } from "./$types"
 
+  export let data: PageData
 
-    let fsList: any[] = []
+  
 
-    async function getFileSystems() {
-      let res = await fetch('/API/getfs');
-
-      try {
-        let data = JSON.parse(await res.json());
-
-        if (data?.filesystems) {
-          fsList = [...data.filesystems]
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-    }
-
-    onMount(() => {
-
-    })
+  let showAddFilesystem: boolean = false
 </script>
 
 <!-- Top Nav -->
@@ -30,27 +17,25 @@
   <nav class="relative w-full h-full flex">
     <div class="leading-8 px-2 font-bold text-xl">ManageMyBTRFS</div>
     <div class="absolute right-0 flex space-x-2">
-      <Notifications/>
+      <button on:click={() => invalidateAll()}>test</button>
+      <MainMenu bind:showAddFilesystem/>
     </div>
   </nav>
 </div>
 <!-- End Top Nav -->
 
 <!-- Page Content -->
-<div class="absolute left-4 right-4 top-14 bottom-4">
-
-
-  <button on:click={getFileSystems}>Get Filesystems</button>
-
-  <br>
-  <br>
-
-  {#if fsList.length === 0}
+<div class="absolute left-4 right-4 top-10 bottom-0 overflow-y-scroll py-4">
+  {#await data.async.fileSystems}
     Loading Filesystems...
-  {:else}
-    {#each fsList as fs}
-      {fs?.target}
-    {/each}
-  {/if}
+  {:then fileSystems} 
+    <div class="grid grid-cols-1 gap-4">
+      {#each fileSystems as fileSystem}
+        <FileSystem {fileSystem}/>
+      {/each}
+    </div>
+  {/await}
 </div>
 <!-- End Page Content -->
+
+<AddFileSystem bind:showAddFilesystem/>

@@ -1,18 +1,21 @@
 <script lang="ts">
   export let label: string
   export let value: string
+  export let full: boolean = true
+  export let submit: () => void
 
   let focused: boolean = false
   $: moveLabel = focused || value != ""
 
 </script>
 
-<div class="relative w-full h-8 mt-1">
+<div class="relative h-8 mt-1" class:w-full={full} class:inline={!full}>
   <input
     class="bg-neutral-700 px-2 focus:outline-none border-[1px] rounded-md border-neutral-500 
            absolute inset-0 cursor-default focus:cursor-text"
     on:focusin={() => focused = true}
     on:focusout={() => focused = false}
+    on:keypress={(e) => {if (e.key === "Enter") submit() }}
     bind:value
   />
   <div 

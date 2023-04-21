@@ -8,7 +8,7 @@
   import SelectMountPoint from "../addfs/SelectMountPoint.svelte"
 
   /** Show/Hide the Modal */
-  export let show = false
+  export let showAddFilesystem = false
 
   let selectedProfile: profile | null
   let selectedDrives: blockDevice[]
@@ -31,7 +31,8 @@
       let data: createFS = {
         profile: selectedProfile,
         devices: selectedDrives,
-        path: `${mntDirectory}/${filesystemName}`
+        path: `${mntDirectory}/${filesystemName}`,
+        label: filesystemName
       }
   
       if (!submitDisabled) {
@@ -56,14 +57,14 @@
   }
   
   function close() {
-    show = false
+    showAddFilesystem = false
     selectedProfile = null
     selectedDrives = []
   }
 
 </script>
 
-{#if show}
+{#if showAddFilesystem}
   <div 
     class="fixed left-0 inset-0 bg-black border-neutral-500 z-40 !m-0 bg-opacity-50 pt-14 pb-4"
     transition:scale={{duration: 200, start: .98}}

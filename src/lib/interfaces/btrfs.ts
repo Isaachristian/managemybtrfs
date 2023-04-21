@@ -61,4 +61,20 @@ export interface createFS {
   profile: profile
   devices: blockDevice[]
   path: string
+  label: string
+}
+
+
+export interface fileSystem {
+	label: string
+  device: string
+	mountpoint: string
+  uuid: string
+  subvolumes: subvolume[]
+}
+
+export interface subvolume {
+  name: string
+  subvolumes: subvolume[]
+  fsMountPoint: string
 }
