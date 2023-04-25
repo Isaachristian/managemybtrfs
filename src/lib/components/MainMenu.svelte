@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Fa from 'svelte-fa/src/fa.svelte'
-  import {faBars as icon, faChevronDown} from "@fortawesome/free-solid-svg-icons";
+  import {faBars as icon, faChevronDown, faFolderTree} from "@fortawesome/free-solid-svg-icons";
   import { slide } from 'svelte/transition'
-  import { cubicOut } from 'svelte/easing'
+  import { cubicInOut, cubicOut } from 'svelte/easing'
   import { invalidateAll } from '$app/navigation'
 
   /** For toggling the modal */
@@ -40,36 +40,54 @@
 
   {#if show}
     <div
-      class="absolute top-10 -right-0 rounded-xl bg-neutral-800 transition-all
-             z-10 border-neutral-600 border-[1px] shadow-lg "
-      transition:slide={{duration: 200, easing: cubicOut}}
+      class="absolute top-10 -right-0 rounded-xl transition-all bg-neutral-800 shadow-md
+             z-20 border-neutral-600 border-[1px] font-thin"
+      transition:slide={{duration: 200, easing: cubicInOut}}
       on:click|stopPropagation
     >
       <div class="relative h-full w-60 p-2">
         <div class="space-y-2">
           <div class="grid grid-cols-2 gap-2">
-            <button class="bg-neutral-600 rounded-lg w-full h-8">Start Scrub</button>
+            <button class="bg-neutral-700 hover:bg-neutral-600 rounded-lg w-full h-8">
+              Start Scrub
+            </button>
 
             <!-- Logout -->
             <form class="col-span-1" method="post" action="?/logout">
-              <button class="bg-neutral-600 rounded-lg w-full h-8 text-red-400 font-bold">Logout</button>
+              <button class="bg-neutral-700 hover:bg-neutral-600 rounded-lg w-full h-8 
+                             text-red-400">
+                Logout
+              </button>
             </form>
 
-            <div class="col-span-2 bg-neutral-600 rounded-lg w-full">
-              <button class="h-8 w-full" on:click={() => showMore = !showMore}> 
-                <Fa class="inline" icon={faChevronDown} rotate={showMore ? "180" : "0"}/> &nbsp;Filesystem Options
+            <div 
+              class="col-span-2 bg-neutral-700 rounded-lg w-full overflow-hidden"
+              class:bg-neutral-800={!showMore}
+            >
+              <button 
+                class="relative h-8 w-full hover:bg-neutral-600 font-normal text-left px-2"
+                on:click={() => showMore = !showMore}
+              > 
+                <Fa class="inline mr-1.5" icon={faFolderTree} scale={.8}/>
+                Filesystem Options
+                <Fa 
+                  class="absolute right-2 top-1/2 -translate-y-1/2" 
+                  icon={faChevronDown}
+                  rotate={showMore ? "180" : "0"}
+                />
               </button>
 
               {#if showMore}
-                <div class="grid gap-2 p-2" transition:slide={{duration: 200}}>
+                <div class="grid" transition:slide={{duration: 200}}>
+                  <div class="h-[.5px] bg-neutral-800"></div>
                   <button 
-                    class="bg-neutral-500 rounded-md w-full h-8" 
+                    class="bg-neutral-700 hover:bg-neutral-600 w-full h-8 text-left px-3" 
                     on:click={runGetFileSystems}
                   >
                     Refresh Filesystems
                   </button>
                   <button 
-                    class="bg-neutral-500 rounded-md w-full h-8" 
+                    class="bg-neutral-700 hover:bg-neutral-600 w-full h-8 text-left px-3" 
                     on:click={toggleAddFilesystem}
                   >
                     Add File System

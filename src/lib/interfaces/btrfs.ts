@@ -65,6 +65,27 @@ export interface createFS {
 }
 
 
+export interface startScrubRequest {
+  location: string
+}
+
+export interface startScrubResponse {
+  success: boolean
+  message?: string
+}
+
+export interface checkScrubRequest {
+  location: string
+}
+
+export interface checkScrubResponse {
+  success: boolean
+  error?: string
+  complete?: boolean
+  progress?: number
+}
+
+
 export interface fileSystem {
 	label: string
   device: string

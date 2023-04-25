@@ -37,8 +37,7 @@
 </script>
 
 <div 
-  class={`bg-neutral-${getBg()} p-3 rounded-md border-[1px] border-neutral-${getBd()} shadow-md grid 
-          gap-3`}
+  class={`bg-zinc-${getBg()}? pl-3 py-3 rounded-md grid`}
 >
   <span class="font-bold text-md leading-3" class:mb-3={sv.subvolumes.length > 0}>
     <span>

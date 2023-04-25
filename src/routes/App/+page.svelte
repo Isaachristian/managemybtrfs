@@ -13,7 +13,7 @@
 </script>
 
 <!-- Top Nav -->
-<div class="absolute left-0 top-0 right-0 h-10 bg-gray-8001 bg-black p-1 px-2">
+<div class="absolute left-0 top-0 right-0 h-10 bg-black p-1 px-2">
   <nav class="relative w-full h-full flex">
     <div class="leading-8 px-2 font-bold text-xl">ManageMyBTRFS</div>
     <div class="absolute right-0 flex space-x-2">
