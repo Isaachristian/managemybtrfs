@@ -67,8 +67,11 @@ export const GET = (({url}) => {
 		// return json(`Percent: ${((Number(usage) / Number(size)) * 100).toFixed(2)}%`)
 	*/
 
-	
-	return json(getFilesystems())
+	try {
+		return json(getFilesystems())
+	} catch {
+		return json([])
+	}
 }) satisfies RequestHandler
 
 
