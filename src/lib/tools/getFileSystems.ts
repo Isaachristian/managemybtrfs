@@ -6,14 +6,14 @@ import type { fileSystem, subvolume } from '$lib/interfaces/btrfs'
  * 
  * @returns 
  */
-export function getFilesystems(): Promise<fileSystem[] | string> {
+export function getFilesystems(): Promise<fileSystem[]> {
   return new Promise(async (resolve, reject) => {
     let fileSystems: fileSystem[] = []
 
 		try {
 			exec('sudo btrfs filesystem show', (error, stdout) => {
 				if (error) {
-					reject(error);
+					reject([]);
 				} 
 	
 				let tokens = stdout.toString().split("\n\n").filter(s => s.trim() != "")
@@ -23,7 +23,7 @@ export function getFilesystems(): Promise<fileSystem[] | string> {
 				resolve(fileSystems) 
 			})
 		} catch (e) {
-			reject(e)
+			reject([])
 		}
   })
 }

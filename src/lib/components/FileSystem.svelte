@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { checkScrubRequest, checkScrubResponse, fileSystem, startScrubRequest, startScrubResponse, subvolume } from "$lib/interfaces/btrfs"
+  import type { checkScrubRequest, checkScrubResponse, fileSystem, startScrubRequest, startScrubResponse } from "$lib/interfaces/btrfs"
   import { faBroom, faCircleInfo, faEllipsis, faPlus, type IconDefinition } from "@fortawesome/free-solid-svg-icons"
   import Fa from "svelte-fa/src/fa.svelte"
   import SubVolume from "./SubVolume.svelte"
@@ -152,7 +152,7 @@
   </div>
 
   <!-- CONTENT -->
-  <div class="pr-3">
+  <div class="pr-2">
     {#if fileSystem.subvolumes.length > 0}
       {#each fileSystem.subvolumes as sv}
         <SubVolume bind:sv/>
