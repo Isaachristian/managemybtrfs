@@ -2,64 +2,51 @@
   import type { subvolume } from "$lib/interfaces/btrfs"
   import Fa from "svelte-fa/src/fa.svelte"
   import SubVolume from "./SubVolume.svelte"
-  import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
+  import { faChevronRight, faEllipsis } from "@fortawesome/free-solid-svg-icons"
   import { slide } from "svelte/transition"
   import Input from "./Input.svelte"
-  import { invalidateAll } from "$app/navigation"
   import { createSubvolume } from "$lib/tools/createNewSubvolume"
-
 
   export let sv: subvolume
   export let parentPath: string = ""
-  export let bg: number = 700
 
   let showMenu = false
-  let addingSV = false
 
+  let showSubvolumes = false
+
+  /** Adding Sub Volume */
+  let addingSV = false
   let value: string = ""
   let error: string | undefined = undefined
 
-  function getBg(): number {
-    return bg > 0 ? bg : 900
-  }
-
-  function getBd(): number {
-    return Math.max(50, getBg() - 100)
-  }
-
+  /**
+   * Builds the parent path
+   */
   function getParentPath(): string {
     return `${parentPath}${parentPath.length > 0 ? '/' : ''}${sv.name}`
   }
+
 
   async function createNewSubvolume() {
     error = await createSubvolume(sv, value, parentPath)
   }
 </script>
 
-<div 
-  class={`bg-neutral-${getBg()} p-3 rounded-md border-[1px] border-neutral-${getBd()} shadow-md grid 
-          gap-3`}
->
-  <span class="font-bold text-md leading-3" class:mb-3={sv.subvolumes.length > 0}>
-    <span>
-      {sv.name ? sv.name : "Placeholder"}
-    </span>
-    <button 
-      class="float-right h-4 relative"
-      class:text-neutral-200={getBg() >= 500}
-      class:hover:text-white={getBg() >= 500}
-      class:text-neutral-900={getBg() < 500}
-      class:hover:text-neutral-700={getBg() < 500}
-      on:click={() => showMenu = !showMenu}
-    >
+<div class="grid mb-4 w-full text-zinc-300 hover:text-white transition-all">
+  <!-- TITLE & MENU -->
+  <div class="font-bold text-md leading-3 text-left">
+    <button class="mr-auto" on:click|stopPropagation={() => showSubvolumes = !showSubvolumes}>
       <Fa 
-        icon={faEllipsis}
+        icon={faChevronRight} 
+        class={`inline pr-1 ${showSubvolumes ? "rotate-90" : "rotate-0"} transition-transform`}
       />
+      {sv.name ? sv.name : "Placeholder"}
+    </button>
+    <button class="float-right h-4 relative" on:click={() => showMenu = !showMenu}>
+      <Fa icon={faEllipsis}/>
       {#if showMenu}
-        <div 
-          class={`absolute top-4 -right-1 w-40  bg-neutral-${700} rounded shadow-lg border-[1px]
-                 border-neutral-500 z-10 overflow-hidden`}
-        >
+        <div class={`absolute top-4 -right-1 w-40  bg-neutral-${700} rounded shadow-lg border-[1px]
+                   border-neutral-500 z-10 overflow-hidden`}>
           <button 
             class="h-8 w-full bg-transparent hover:bg-neutral-800 text-white"
             on:click={() => addingSV = true}
@@ -69,15 +56,16 @@
         </div>
       {/if}
     </button>
-  </span>
+  </div>
 
-  {#each sv.subvolumes as subvolume}
-    <SubVolume 
-      bind:sv={subvolume} 
-      bg={bg-100} 
-      parentPath={getParentPath()}
-    />
-  {/each}
+  <!-- SUBVOLUMES -->
+  {#if sv.subvolumes.length > 0 && showSubvolumes} 
+    <div class="ml-4 pt-3 -mb-1" transition:slide={{duration: 150}}>
+      {#each sv.subvolumes as subvolume}
+        <SubVolume bind:sv={subvolume} parentPath={getParentPath()}/>
+      {/each}
+    </div>
+  {/if}
 
   {#if addingSV}
     <div 
@@ -86,9 +74,10 @@
       class:h-12={!!error}
     >
       <div class="absolute inset-0 right-20 -top-1">
-        <Input 
+        <Input
           label="New Subvolume"
           submit={createNewSubvolume}
+          cancel={() => addingSV = false}
           bind:value
         />
       </div>

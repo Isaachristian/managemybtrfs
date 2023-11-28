@@ -10,17 +10,21 @@ export function getFilesystems(): Promise<fileSystem[]> {
   return new Promise(async (resolve, reject) => {
     let fileSystems: fileSystem[] = []
 
-		exec('sudo btrfs filesystem show', (error, stdout) => {
-			if (error) {
-				reject(error);
-			} 
+		try {
+			exec('sudo btrfs filesystem show', (error, stdout) => {
+				if (error) {
+					reject([]);
+				} 
+	
+				let tokens = stdout.toString().split("\n\n").filter(s => s.trim() != "")
 
-			let tokens = stdout.toString().split("\n\n").filter(s => s.trim() != "")
-
-			fileSystems = tokens.map(fsString => processFSString(fsString))
-
-			resolve(fileSystems) 
-		})
+				fileSystems = tokens.map(t => processFSString(t)).filter(fs => fs.mountpoint !== "")
+	
+				resolve(fileSystems) 
+			})
+		} catch (e) {
+			reject([])
+		}
   })
 }
 
@@ -32,11 +36,10 @@ export function getFilesystems(): Promise<fileSystem[]> {
 function processFSString(fsString: string): fileSystem {
 	let label: string = ""
 	let uuid: string = ""
-	let device: string = ""
+	let devices: string[] = []
 	let mountpoint: string = ""
 	
 	let tokens = fsString.trim().split(/[ \n\t]/)
-	// console.log(tokens)
 	for (let i = 0; i < tokens.length; i++) {
 		switch (tokens[i]) {
 			case "Label:":
@@ -45,18 +48,24 @@ function processFSString(fsString: string): fileSystem {
 				} else {
 					label = tokens[i+1]
 				}
+				break
 			case "uuid":
 				uuid = tokens[i+1]
+				break
 			case "path": 
-				device = tokens[i+1]
+				devices.push(tokens[i+1])
+				break
 		}
 	}
 
-	mountpoint = getMountPoint(device)
+	let i = -1
+	while (mountpoint === "" && i < devices.length) {
+		mountpoint = getMountPoint(devices[++i])
+	}
 
 	return {
 		label: label,
-		device: device,
+		device: devices[i],
 		mountpoint: mountpoint,
 		uuid: uuid,
 		subvolumes: getSubvolumes(mountpoint) // TODO
@@ -70,12 +79,16 @@ function processFSString(fsString: string): fileSystem {
  * @returns 
  */
 function getMountPoint(device: string): string {
-	let buf = execSync(`mount | grep ${device}`).toString()
-
-	let index1 = buf.search(" on ")
-	let index2 = buf.search(" type ")
-
-	return buf.slice(index1+4, index2)
+	try {
+		let buf = execSync(`sudo mount | grep ${device}`).toString()
+	
+		let index1 = buf.search(" on ")
+		let index2 = buf.search(" type ")
+	
+		return buf.slice(index1+4, index2)
+	} catch (e) {
+		return ""
+	}
 }
 
 

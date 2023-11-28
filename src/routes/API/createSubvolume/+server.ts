@@ -12,7 +12,7 @@ export const POST = (async ({request}) => {
 
     if (!/[a-zA-Z0-9/_]+$/g.test(location)) {
       return new Response(JSON.stringify({error: "Must only be alphanumeric"}))
-    } else if (location.at(location.length-1) !== "/") {
+    } else if (location.at(location.length-1) === "/") {
       return new Response(JSON.stringify({error: "Name cannot be empty"}))
     } else {
       execSync(`sudo btrfs subvolume create ${location}`)

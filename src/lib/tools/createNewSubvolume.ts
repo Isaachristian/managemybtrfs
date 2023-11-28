@@ -9,7 +9,7 @@ export async function createSubvolume(parent: subvolume, name: string,
   return await createSubvolumeWithLocation(`${mp}${pp}${parent.name}/${name}`)
 }
 
-export async function createSubvolumeWithLocation(location: string) {
+export async function createSubvolumeWithLocation(location: string): Promise<string | undefined> {
   let request = {
     location: location
   }
